@@ -24,10 +24,10 @@ private:
 	Queue operator=(const Queue&);
 
 public:
-	Queue(uint32_t count = default_threads, uint32_t size = default_size);
+	Queue(uint32_t size = default_size, uint32_t count = default_threads);
 	~Queue();
 
-	Taskptr get_next_task();
+	Taskptr dequeue();
 	void enqueue(const Taskptr);
 
 	uint32_t get_task_count();

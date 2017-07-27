@@ -42,3 +42,4 @@ include_directories("${source_dir}/googletest/include"
 
 # Add the unit tests
 add_subdirectory(testqueue)
+add_subdirectory(testtask)

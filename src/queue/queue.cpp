@@ -1,8 +1,12 @@
 #include <cstdlib>
-#include <cstring>
 #include "queue.hpp"
+#include "task.hpp"
 
-Queue::Queue(uint32_t count, uint32_t size) {
+static inline uint32_t increment_index(uint32_t index, const uint32_t size) {
+	return (index + 1) % size;
+}
+
+Queue::Queue(uint32_t size, uint32_t count) {
 	thread_count = count;
 	max_size = size;
 	start_index = 0;
@@ -21,21 +25,31 @@ void Queue::enqueue(const Taskptr task) {
 	if (task_count == max_size) {
 		Taskptr* new_container = new Taskptr[max_size * 2];
 
-		memcpy(new_container, container, sizeof(Taskptr) * max_size);
-		delete[] container;
+		// Rearrange the queue so that the first task is at index zero.
+		uint32_t cur_index = 0;
+		uint32_t moved_task = 0;
+		while (moved_task <= task_count) {
+			new_container[cur_index] = container[start_index];
+			start_index = increment_index(start_index, max_size);
+			++cur_index;
+			++moved_task;
+		}
+		start_index = 0;
+		end_index = task_count;
 
+		delete[] container;
 		container = new_container;
 		max_size *= 2;
 	}
 
 	container[end_index] = task;
-	end_index = (end_index + 1) % max_size;
+	end_index = increment_index(end_index, max_size);
 	++task_count;
 }
 
-Task* Queue::get_next_task() {
+Task* Queue::dequeue() {
 	Task* ret = container[start_index];
-	start_index = (start_index + 1) % max_size;
+	start_index = increment_index(start_index, max_size);
 	--task_count;
 
 	return ret;
