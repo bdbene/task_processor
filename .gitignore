@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+Tasks
+
+# Generated files and build directory
+bin/*
