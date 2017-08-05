@@ -1,12 +1,15 @@
+#include <chrono>
 #include <cstdlib>
 #include <iostream>
+#include <thread>
 #include "queue.hpp"
-#include "task.hpp"
+#include "sample_task.hpp"
 using namespace std;
 
 int main(int argc, char** argv) {
 	int thread_count = 4;
 	int task_count = 100;
+	SampleTask** tasks = nullptr;
 
 	switch (argc) {
 		case 3:
@@ -20,11 +23,20 @@ int main(int argc, char** argv) {
 			return -1;
 	}
 
-	cout << thread_count << endl;
-	cout << task_count << endl;
-
 	int queue_size = task_count / 2 + 1;
 
-	Queue* processor = new Queue(thread_count, queue_size);
-	delete processor;
+	Queue processor(queue_size, thread_count);
+	tasks = new SampleTask*[task_count];
+	for (int i = 0; i < task_count; i++) {
+		tasks[i] = new SampleTask(processor);
+		processor.enqueue(tasks[i]);
+	}
+
+	this_thread::sleep_for(chrono::seconds(20));
+
+	for (int i = task_count - 1; i >= 0; --i) {
+		delete tasks[i];
+	}
+
+	delete tasks;
 }
