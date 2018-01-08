@@ -9,6 +9,9 @@ Worker::~Worker() {
 	if (worker_thread.joinable()) {
 		worker_thread.detach();
 	}
+
+	// Inform the queue that this is shutting down.
+	queue.notify_stopped(this);
 }
 
 void Worker::start() {
@@ -17,6 +20,10 @@ void Worker::start() {
 }
 
 void Worker::run() {
-	Task *task = queue.dequeue();
-	task->run();
+
+	// The queue won't give work if it's shutting down.
+	while (Task *task = queue.dequeue()) {
+		task->run();
+		task->notify();
+	}
 }

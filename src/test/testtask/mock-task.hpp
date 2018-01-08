@@ -7,6 +7,7 @@
 class MockTask: public Task {
 public:
 	MOCK_METHOD0(run, void());
+	MOCK_METHOD0(notify, void());
 };
 
 #endif

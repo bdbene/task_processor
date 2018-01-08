@@ -9,9 +9,12 @@ using namespace std;
 int main(int argc, char** argv) {
 	int thread_count = 4;
 	int task_count = 100;
+	int seconds = 20;
 	SampleTask** tasks = nullptr;
 
 	switch (argc) {
+		case 4:
+			seconds = atoi(argv[3]);
 		case 3:
 			task_count = atoi(argv[2]);
 		case 2:
@@ -38,5 +41,5 @@ int main(int argc, char** argv) {
 		delete tasks[i];
 	}
 
-	delete tasks;
+	delete[] tasks;
 }

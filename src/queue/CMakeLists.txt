@@ -5,4 +5,4 @@ add_library(queue STATIC queue.cpp)
 
 add_subdirectory(worker)
 
-target_link_libraries(queue worker)
+target_link_libraries(queue worker task)

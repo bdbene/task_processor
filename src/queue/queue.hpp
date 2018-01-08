@@ -16,7 +16,10 @@ private:
 	typedef Task* Taskptr;
 	typedef Worker* Workerptr;
 
-	uint32_t thread_count;
+	const uint32_t max_worker_count;
+	uint32_t worker_count;
+	uint32_t worker_resting;
+	bool shut_down;			// Whether queue is shutting down
 
 	Taskptr* container;		// Points to all memory allocated for the queue
 	Workerptr* worker_pool; // All worker threads
@@ -29,6 +32,7 @@ private:
 	// To make the queue thread safe
 	std::mutex lock;
 	std::condition_variable worker_cv;		// For waiting workers.
+	std::condition_variable cleanup_cv;		// For waiting for all workers to finish their current task.
 
 	Queue(const Queue&);
 	Queue operator=(const Queue&);
@@ -39,6 +43,8 @@ public:
 
 	Taskptr dequeue();
 	void enqueue(const Taskptr);
+
+	void notify_stopped(Worker*);
 
 	uint32_t get_task_count();
 };

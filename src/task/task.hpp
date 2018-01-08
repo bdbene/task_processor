@@ -3,8 +3,16 @@
 
 class Task {
 public:
+	typedef void (*Callback)();
+private:
+	Callback callback;
+public:
+	Task();
+	Task(Callback);
+	virtual ~Task();
+
 	virtual void run() = 0;
-	virtual ~Task() {}
+	void notify();
 };
 
 #endif

@@ -32,6 +32,4 @@ void SampleTask::run() {
 		unique_lock<mutex> lk(lock);
 		cout << "Done working for " << seconds << endl;
 	}
-
-	queue.enqueue(this);
 }
